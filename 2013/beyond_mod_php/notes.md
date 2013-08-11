@@ -18,30 +18,79 @@
 - (Now pull back out to "same" image with Browser + Apache + php-fpm )
    Now Apache can be changed to use it's threaded MPM worker.
 
-Why is this better?
+# Why is this better?
 
-* Apache gets to do what Apache knows best--serving web content
-* PHP becomes a service of flexible, restart-able, pools
-* No worries about "thread safety" no matter what PHP modules you run
-* php-fpm can create php-specific logging, customized environments and resource allocation per pool, different user/groups per pool, etc.
-* Available memory can be more precisely controlled to your traffic / resources available
+- Apache gets to do what Apache knows best--serving web content
+- PHP becomes a service of flexible, restart-able, pools
+- No worries about "thread safety" no matter what PHP modules you run
+- a php-fpm pool can have completly seperate
+  - logging
+  - customized environments
+  - resource allocation
+  - user/groups
+- Available memory can be more precisely controlled to your traffic / resources available
+- One php pool could be restricted from updating php scripts or even reading other directories
 
-Look at a php-fpm configuration
-Things to show:
-    # ps -ef of a couple of different pools running as different users
-    # diving into the config of a pool showing:
-        * name
-        * listen
-        * permissions
-        * user/group
-        * resource limits
-        * php environment settings
+# Look at a php-fpm configuration
+  Things to show:
+  - ps -ef of a couple of different pools running as different users
+  - diving into the config of a pool showing:
+    - name
+    - listen
+    - permissions
+    - user/group
+    - resource limits
+    - php environment settings
 
 
-Connecting Apache to your php-fpm pools with mod_fastcgi
+# "The missing Link" FastCGI
+- FastCGI is the interface php-fpm expects to use with the Web Server
+- For Apache, these are mainly
+  - mod_fcgi
+    - newer bigger brother, but duplicates a LOT of the functionality in php-fpm
+    - good choice if you are running different versions of PHP (including 4)
+    - can be used with mod_suexec to spawn non-php-fpm instances of PHP
+    - Comes with most Package Managers
+  - mod_fastcgi
+    - Much simplier to configure
+    - Doesn't manage it's own pool--perfect for php-fpm
+    - May not come in your Package Manager (Centos/REL) but easy to build
+    - is simply a FastCGI interface
+    - We will focus on this one for today
+
+# Connecting Apache to your php-fpm pools with mod_fastcgi
+- (Maybe the diagram but with mod_fastcgi added?)
+- Show a simple mod_php style virtual host file
+- Add the directives for processing php
+- Make sure to show how it demonstrates ONLY .php files will be run as PHP
+- (Show diagram again and stop for questions
 
 
-Adding APM into the mix
+# Kicking up the heat
+- Adding an Opcode Cache
+- Logging Slow PHP requests
+- Replacing Apache?
+
+## Adding an Opcode Cache
+- Full stack frameworks are big
+- Wordpress is big
+- Drupal is big
+- 100+ php scripts need to be compiled per requests
+- php's compiler is FREAKY FAST
+- But still, that's a lot of compiling
+## Opcode Caching Options
+- Zend's Opcache - Recently Open Sourced, built into PHP 5.5
+- APC - 
+- 
+# Zend's Opcache in PHP 5.5
+  Looking at [Chris Jones' post](https://blogs.oracle.com/opal/entry/using_php_5_5_s), in 5.5 is should be as easy as :
+  ```ini
+   ; Adding the extension ...
+   zend_extension=opcache.so
+   ; and turning it on...
+   opcache.enable=On
+  ```
+
 
 
 Replacing Apache with Nginx
