@@ -78,11 +78,13 @@
 - 100+ php scripts need to be compiled per requests
 - php's compiler is FREAKY FAST
 - But still, that's a lot of compiling
+
 ## Opcode Caching Options
-- Zend's Opcache - Recently Open Sourced, built into PHP 5.5
-- APC - 
-- 
-# Zend's Opcache in PHP 5.5
+  - Zend's Opcache - Recently Open Sourced, built into PHP 5.5
+  - APC - LOTS of years of production use.  Additional software
+  - APC can also act like a generic cache much like mcached...but that's another talk
+
+### Zend's Opcache in PHP 5.5
   Looking at [Chris Jones' post](https://blogs.oracle.com/opal/entry/using_php_5_5_s), in 5.5 is should be as easy as :
   ```ini
    ; Adding the extension ...
@@ -90,6 +92,50 @@
    ; and turning it on...
    opcache.enable=On
   ```
+
+### APC - Alternate PHP Cache
+  - Install from PECL or your OS's package manager
+  - Can use a .php script to see statistics
+  - (Screenshot of illert's APC)
+  - LOTS of blog posts on helping configure with your setup
+
+## Logging slow PHP requests
+  - (Show example of one)
+  - Similar to mysql's slow query log
+  - Show's script name, a stack, time, etc
+  - Doesn't show full request or paramaters
+  - Not a black box dump like a xdebug profiler or Zend Server dump
+
+  
+## Replacing Apache
+  - Any FactCGI webserver will probably do
+  - Most comon swap-out replacement is Nginx
+
+# Nginx
+  - Was origionally an HTTP Proxy
+  - May take less memory (allowing you to put it towards PHP or MySQL)
+  - Supports fastcgi nativly
+  - Allows precise control with a simplier syntax
+  - Still "new" compared to Apache's maturity, but this doesn't mean experimental
+
+# The Nginx configuration file
+  - Show a simple content "server" config
+  - Add a location ~ for running all .php
+  - replace that location ~ to just run index, and deny all others
+  - Add in a try_files for adding a front controller php script
+  - block a config file
+
+
+
+  
+
+
+
+
+
+
+
+  
 
 
 
